@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chat Bucin 💌</title>
+  <style>
+    body {
+      margin: 0; font-family: sans-serif;
+      background-color: #ffe4e6;
+      display: flex; justify-content: center; align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      width: 90%;
+      max-width: 400px;
+      height: 90vh;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .chatbox {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      background: #fef2f2;
+    }
+    .bubble {
+      padding: 10px;
+      margin: 6px 0;
+      border-radius: 12px;
+      max-width: 80%;
+    }
+    .them { background: white; align-self: flex-start; }
+    .me { background: #f472b6; color: white; align-self: flex-end; }
+    .options {
+      padding: 10px;
+      border-top: 1px solid #fbcfe8;
+      background: #fff0f5;
+    }
+    .options button {
+      background: #ec4899;
+      color: white;
+      padding: 10px;
+      margin: 5px 0;
+      border: none;
+      width: 100%;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .options button:hover {
+      background: #db2777;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="chatbox" id="chatbox"></div>
+    <div class="options" id="options"></div>
+  </div>
+
+  <script>
+    const chatbox = document.getElementById('chatbox');
+    const options = document.getElementById('options');
+    let score = 0;
+    let index = 0;
+
+    const story = [
+      {
+        msg: "Hai, kamu lagi ngapain? 😄",
+        choices: [
+          { text: "Baru bangun, mikirin kamu~", score: 3 },
+          { text: "Lagi rebahan, kenapa?", score: 1 },
+          { text: "Ngapain nanya?", score: 0 }
+        ]
+      },
+      {
+        msg: "Ih kamu manis banget sih 😳",
+        choices: [
+          { text: "Baru tau ya? Emang manis kok~", score: 3 },
+          { text: "Ehehe makasih yaa", score: 2 },
+          { text: "Ywdh", score: 0 }
+        ]
+      },
+      {
+        msg: "Kalau kita jadian, kamu bakal setia?",
+        choices: [
+          { text: "Selamanya. Cuma kamu ❤️", score: 3 },
+          { text: "Yg penting kamu juga ya~", score: 2 },
+          { text: "Liat nanti deh", score: 1 }
+        ]
+      },
+      {
+        msg: "Aku takut kamu cuma main-main 😔",
+        choices: [
+          { text: "Enggak! Aku serius kok 😭", score: 3 },
+          { text: "Gapapa, kita jalanin aja ya", score: 2 },
+          { text: "Santai aja napa", score: 0 }
+        ]
+      }
+    ];
+
+    function showMessage(text, sender) {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble ' + (sender === 'me' ? 'me' : 'them');
+      bubble.textContent = text;
+      chatbox.appendChild(bubble);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function showChoices(choices) {
+      options.innerHTML = '';
+      choices.forEach(choice => {
+        const btn = document.createElement('button');
+        btn.textContent = choice.text;
+        btn.onclick = () => {
+          showMessage(choice.text, 'me');
+          score += choice.score;
+          index++;
+          nextStep();
+        };
+        options.appendChild(btn);
+      });
+    }
+
+    function nextStep() {
+      if (index < story.length) {
+        setTimeout(() => {
+          showMessage(story[index].msg, 'them');
+          showChoices(story[index].choices);
+        }, 500);
+      } else {
+        showEnding();
+      }
+    }
+
+    function showEnding() {
+      options.innerHTML = '';
+      let ending = '';
+      if (score >= 10) {
+        ending = "💘 Kamu bucin maksimal! Hatimu sepenuhnya miliknya.";
+      } else if (score >= 6) {
+        ending = "😊 Kamu bucin, tapi masih logis. Good job!";
+      } else {
+        ending = "😅 Kayaknya kamu lebih cocok jadi temennya aja...";
+      }
+      showMessage("Makasi udah chat sama aku ya ❤️", 'them');
+      setTimeout(() => {
+        showMessage(ending, 'them');
+      }, 1000);
+    }
+
+    // Start game
+    showMessage(story[0].msg, 'them');
+    showChoices(story[0].choices);
+  </script>
+</body>
+</html>
